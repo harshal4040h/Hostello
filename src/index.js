@@ -7,6 +7,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './Commn/Home';
 import Student_Res from './Commn/Student_Res';
 import BookHostel from './Commn/BookHostel';
+import Login from './Commn/Login';
+import User from './Commn/User';
 
 
 
@@ -18,7 +20,7 @@ let allroutes = createBrowserRouter([
     children  : [
       {
         path :'/',
-        element: <Home/>,
+        element: <Student_Res/>,
       },
       {
         path: '/studentregistration',
@@ -27,6 +29,18 @@ let allroutes = createBrowserRouter([
       {
         path: '/bookhostel',
         element: <BookHostel/>
+      },
+      {
+        path:"/home",
+        element: <Home/>,
+      },
+      {
+        path:"/login",
+        element:<Login/>,
+      },
+      {
+        path:"/user",
+        element:<User/>
       }
     ]
   }
