@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from "react-hot-toast";
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,11 +34,11 @@ export default function Login() {
     const result = await response.json();
 
     if (result.status === 'success') {
-      alert('✅ ' + result.message);
-       window.location.href = "/home"; 
+      toast.success(result.message);
+      window.location.href = "/home";
     }
     else {
-      alert('❌ ' + result.message);
+      toast.error(result.message);
     }
 
   };
@@ -69,6 +71,10 @@ export default function Login() {
 
         </div>
       </div>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </div>
   )
 }
