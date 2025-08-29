@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import toast, { Toaster } from "react-hot-toast";
+import { useLocation } from 'react-router-dom';
 
 export default function BookHostel() {
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get("category"); // standard | executive | premium | royal
 
   const [data, setdata] = useState({
     course: "",
@@ -9,22 +14,38 @@ export default function BookHostel() {
     start_date: "",
     food_status: "",
     total_amount: "",
-    duration: ""
+    duration: "",
+    g_name: "",
+    g_contact: "",
+    g_relation: "",
+    g_address: ""
   });
 
   const [rooms, setRooms] = useState([]);
-  const [photo, setPhoto] = useState(null);
+
   useEffect(() => {
-    fetch("http://localhost/hostello_php/get_rooms.php", {
-      credentials: "include"
-    })
+    fetch("http://localhost/hostello_php/get_rooms.php", { credentials: "include" })
       .then(res => res.json())
-      .then(data => setRooms(data));
-  }, []);
+      .then(data => {
+        let filtered = data;
+
+        if (category === "standard") {
+          filtered = data.filter(r => r.roomnumber.startsWith("1"));
+        } else if (category === "executive") {
+          filtered = data.filter(r => r.roomnumber.startsWith("2"));
+        } else if (category === "premium") {
+          filtered = data.filter(r => r.roomnumber.startsWith("3"));
+        } else if (category === "royal") {
+          filtered = data.filter(r => r.roomnumber.startsWith("4"));
+        }
+
+        setRooms(filtered);
+      });
+  }, [category]);
 
   const handlechange = (e) => {
     const { name, value } = e.target;
-   
+
 
 
     // If duration changes, auto-update total_amount
@@ -93,7 +114,7 @@ export default function BookHostel() {
   const handlesubmit = async (e) => {
     e.preventDefault();
 
-   
+
     const response = await fetch("http://localhost/hostello_php/book_hostel.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -119,10 +140,12 @@ export default function BookHostel() {
       <div>
         <form className='flex justify-center ' onSubmit={handlesubmit}>
 
-          <div className='w-10/12 h-[460px] my-8 bg-slate-50 mt-[60px]'>
+          <div className='w-10/12 h-[560px] my-8 bg-slate-50 mt-4'>
 
             <div className='flex  mx-2'>
+
               <div className='mx-48'>
+
                 <div className="my-5">
                   <label>Start Date</label>
                   <input type="date" name="start_date" onChange={handlechange} value={data.start_date} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
@@ -139,6 +162,7 @@ export default function BookHostel() {
                     <option value='MCA'>MCA</option>
                   </select>
                 </div>
+
                 <div className="my-5">
                   <label>Room Number</label>
                   <select name="room" onChange={handlechange} value={data.room} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
@@ -149,9 +173,13 @@ export default function BookHostel() {
                       </option>
                     ))}
                   </select>
+
                 </div>
+
               </div>
+
               <div className=''>
+
                 <div className="my-5">
                   <label>Duration</label>
                   <select name="duration" onChange={handlechange} value={data.duration} disabled={!data.room} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
@@ -176,20 +204,70 @@ export default function BookHostel() {
               </div>
 
             </div>
-            <div>
+            {/* <div>
               <div className="my-5 text-center">
                 <label>Upload Photo</label>
                 <input type="file" name="photo" accept="image/*" onChange={handlechange} className='bg-gray-50 border  ml-2  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
               </div>
+            </div> */}
+            <div>
+              <div>
+
+              </div>
+            </div>
+
+            <div className=''>
+              <div>
+                <h1 className='text-center text-2xl font-bold '>Gardian information</h1>
+
+                <div className='flex  mx-2'>
+
+                  <div className='mx-48'>
+
+                    <div className='mt-5'>
+                      <label for="name">Name: </label>
+                      <input type="text" value={data.g_name} name="g_name" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                    </div>
+                  </div>
+
+
+
+                  <div className='mt-5'>
+                    <label for="name">Contact: </label>
+                    <input type="text" value={data.g_contact} name="g_contact" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                  </div>
+
+
+
+                </div>
+                <div>
+                  <div className='flex  mx-2'>
+
+                    <div className='mx-48'>
+                      <div className='mt-5'>
+                        <label for="name">relation: </label>
+                        <input type="text" value={data.g_relation} name="g_relation" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                      </div>
+                    </div>
+
+                    <div className=''>
+                      <div className='mt-5'>
+                        <label for="name">Address: </label>
+                        <input type="text" value={data.g_address} name="g_address" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
             </div>
             <div className='text-center'>
-              <button type="submit" class="bg-gray-950 my-8 mx-36 text-gray-400 border border-gray-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
+              <button class="bg-gray-950  text-gray-400 border mt-6 border-gray-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
                 <span class="bg-gray-400 shadow-gray-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                BOOK
+                submit
               </button>
-            </div>
-            <div>
-
             </div>
           </div>
         </form>
