@@ -46,8 +46,6 @@ export default function BookHostel() {
   const handlechange = (e) => {
     const { name, value } = e.target;
 
-
-
     // If duration changes, auto-update total_amount
     if (name === "duration") {
       const selectedRoom = rooms.find(r => r.roomnumber === data.room);
@@ -57,7 +55,6 @@ export default function BookHostel() {
         if (value === "2yr") amount = Number(selectedRoom.c_2year);
         if (value === "3yr") amount = Number(selectedRoom.c_3year);
 
-
         setdata({
           ...data,
           duration: value,
@@ -65,8 +62,8 @@ export default function BookHostel() {
         });
         return;
       }
-
     }
+
     if (name === "food_status") {
       let baseAmount = 0;
 
@@ -106,14 +103,10 @@ export default function BookHostel() {
       ...data,
       [e.target.name]: e.target.value
     });
-
-
   };
-
 
   const handlesubmit = async (e) => {
     e.preventDefault();
-
 
     const response = await fetch("http://localhost/hostello_php/book_hostel.php", {
       method: "POST",
@@ -121,7 +114,6 @@ export default function BookHostel() {
       body: JSON.stringify(data),
       credentials: "include"
     });
-
 
     const result = await response.json();
 
@@ -131,7 +123,6 @@ export default function BookHostel() {
     } else {
       toast.error("❌ " + result.message);
     }
-
   }
 
   return (
@@ -148,11 +139,25 @@ export default function BookHostel() {
 
                 <div className="my-5">
                   <label>Start Date</label>
-                  <input type="date" name="start_date" onChange={handlechange} value={data.start_date} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
+                  <input
+                    type="date"
+                    name="start_date"
+                    onChange={handlechange}
+                    value={data.start_date}
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  />
                 </div>
+
                 <div className='my-5'>
                   <label className=''>Course</label>
-                  <select onChange={handlechange} value={data.course} name='course' className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                  <select
+                    onChange={handlechange}
+                    value={data.course}
+                    name='course'
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  >
                     <option value="">-- Select Course --</option>
                     <option value='BBA'>BBA</option>
                     <option value='BCA'>BCA</option>
@@ -165,15 +170,24 @@ export default function BookHostel() {
 
                 <div className="my-5">
                   <label>Room Number</label>
-                  <select name="room" onChange={handlechange} value={data.room} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                  <select
+                    name="room"
+                    onChange={handlechange}
+                    value={data.room}
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  >
                     <option value="">-- Select Room --</option>
                     {rooms.map((room, index) => (
-                      <option key={index} value={room.roomnumber}>
-                        {room.roomnumber}
+                      <option
+                        key={index}
+                        value={room.roomnumber}
+                        disabled={room.booked_count >= 2} // 🔹 disable full rooms
+                      >
+                        {room.roomnumber} {room.booked_count >= 2 ? "(Full)" : `(${room.booked_count}/2 booked)`}
                       </option>
                     ))}
                   </select>
-
                 </div>
 
               </div>
@@ -182,100 +196,133 @@ export default function BookHostel() {
 
                 <div className="my-5">
                   <label>Duration</label>
-                  <select name="duration" onChange={handlechange} value={data.duration} disabled={!data.room} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                  <select
+                    name="duration"
+                    onChange={handlechange}
+                    value={data.duration}
+                    disabled={!data.room}
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  >
                     <option value="">-- Select Duration --</option>
                     <option value="1yr">1 Year</option>
                     <option value="2yr">2 Years</option>
                     <option value="3yr">3 Years</option>
                   </select>
                 </div>
+
                 <div className="my-5">
                   <label>Food Status</label>
-                  <select name="food_status" onChange={handlechange} value={data.food_status} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'>
+                  <select
+                    name="food_status"
+                    onChange={handlechange}
+                    value={data.food_status}
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  >
                     <option value="">-- Select --</option>
                     <option value="yes">With Food(+20000)</option>
                     <option value="no">Without Food</option>
                   </select>
                 </div>
+
                 <div className="my-5">
                   <label>Total Amount</label>
-                  <input type="text" name="total_amount" value={data.total_amount} readOnly className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
+                  <input
+                    type="text"
+                    name="total_amount"
+                    value={data.total_amount}
+                    readOnly
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                  />
                 </div>
               </div>
 
-            </div>
-            {/* <div>
-              <div className="my-5 text-center">
-                <label>Upload Photo</label>
-                <input type="file" name="photo" accept="image/*" onChange={handlechange} className='bg-gray-50 border  ml-2  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-              </div>
-            </div> */}
-            <div>
-              <div>
-
-              </div>
             </div>
 
             <div className=''>
               <div>
-                <h1 className='text-center text-2xl font-bold '>Gardian information</h1>
+                <h1 className='text-center text-2xl font-bold '>Guardian information</h1>
 
                 <div className='flex  mx-2'>
-
                   <div className='mx-48'>
-
                     <div className='mt-5'>
-                      <label for="name">Name: </label>
-                      <input type="text" value={data.g_name} name="g_name" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                      <label htmlFor="name">Name: </label>
+                      <input
+                        type="text"
+                        value={data.g_name}
+                        name="g_name"
+                        onChange={handlechange}
+                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                      />
                     </div>
                   </div>
-
-
 
                   <div className='mt-5'>
-                    <label for="name">Contact: </label>
-                    <input type="text" value={data.g_contact} name="g_contact" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
+                    <label htmlFor="contact">Contact: </label>
+                    <input
+                      type="text"
+                      value={data.g_contact}
+                      name="g_contact"
+                      onChange={handlechange}
+                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                      focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    />
                   </div>
-
-
-
-                </div>
-                <div>
-                  <div className='flex  mx-2'>
-
-                    <div className='mx-48'>
-                      <div className='mt-5'>
-                        <label for="name">relation: </label>
-                        <input type="text" value={data.g_relation} name="g_relation" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
-                      </div>
-                    </div>
-
-                    <div className=''>
-                      <div className='mt-5'>
-                        <label for="name">Address: </label>
-                        <input type="text" value={data.g_address} name="g_address" onChange={handlechange} className='bg-gray-50 border    border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' ></input>
-                      </div>
-                    </div>
-
-                  </div>
-
                 </div>
 
+                <div className='flex  mx-2'>
+                  <div className='mx-48'>
+                    <div className='mt-5'>
+                      <label htmlFor="relation">Relation: </label>
+                      <input
+                        type="text"
+                        value={data.g_relation}
+                        name="g_relation"
+                        onChange={handlechange}
+                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                      />
+                    </div>
+                  </div>
+
+                  <div className=''>
+                    <div className='mt-5'>
+                      <label htmlFor="address">Address: </label>
+                      <input
+                        type="text"
+                        value={data.g_address}
+                        name="g_address"
+                        onChange={handlechange}
+                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div className='text-center'>
-              <button class="bg-gray-950  text-gray-400 border mt-6 border-gray-400 border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
-                <span class="bg-gray-400 shadow-gray-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                submit
+              <button
+                type="submit"
+                className="bg-gray-950 text-gray-400 border mt-6 border-gray-400 border-b-4 
+                font-medium overflow-hidden relative px-4 py-2 rounded-md 
+                hover:brightness-150 hover:border-t-4 hover:border-b 
+                active:opacity-75 outline-none duration-300 group"
+              >
+                <span className="bg-gray-400 shadow-gray-400 absolute -top-[150%] left-0 
+                inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] 
+                duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
+                Submit
               </button>
             </div>
           </div>
         </form>
       </div>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   )
 }
