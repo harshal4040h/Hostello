@@ -9,7 +9,9 @@ import Student_Res from './Commn/Student_Res';
 import BookHostel from './Commn/BookHostel';
 import Login from './Commn/Login';
 import User from './Commn/User';
-
+import PaymentPage from "./Commn/PaymentPage";
+import AdminLogin from './admin/AdminLogin';
+import AdminDashboard from './admin/AdminDashboard';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -17,30 +19,42 @@ let allroutes = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    children  : [
+    children: [
       {
-        path :'/',
-        element: <Student_Res/>,
+        path: '/',
+        element: <Student_Res />,
       },
       {
         path: '/studentregistration',
-        element:<Student_Res/>
+        element: <Student_Res />
       },
       {
         path: '/bookhostel',
-        element: <BookHostel/>
+        element: <BookHostel />
       },
       {
-        path:"/home",
-        element: <Home/>,
+        path: "/home",
+        element: <Home />,
       },
       {
-        path:"/login",
-        element:<Login/>,
+        path: "/login",
+        element: <Login />,
       },
       {
-        path:"/user",
-        element:<User/>
+        path: "/user",
+        element: <User />
+      },
+      {
+        path: "/payment",
+        element: <PaymentPage />
+      }, 
+      {
+        path:"/adminlogin",
+        element:<AdminLogin/>
+      },
+      {
+        path:"/admin-dashboard",
+        element:<AdminDashboard/>
       }
     ]
   }

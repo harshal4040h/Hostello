@@ -13,7 +13,7 @@ export default function Home() {
       .then(data => {
         if (data.loggedIn) setUser(data.user);
         else setUser(null);
-      
+
       });
   }, []);
 
@@ -21,10 +21,11 @@ export default function Home() {
     await fetch("http://localhost/hostello_php/logout.php", {
       method: "POST",
       credentials: "include"// log-out 
-      
+
     });
     setUser(null);
-     window.location.href = "/login"; 
+    window.location.href = "/login";
+
   };
 
   return (
@@ -38,17 +39,17 @@ export default function Home() {
           <h1 className='text-gray-400 text-xl font-bold ml-2 '>Hostello</h1>
         </div>
       </div>
-    {user && (
-      <div className='flex mt-10 hover:cursor-pointer hover:border-l-[3px] border-white  hover:text-white hover:bg-gray-700 hover:rounded-lg'>
-        <div>
-          <svg className='w-9  fill-gray-400' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" /></svg>
+      {user && user.role === "user" &&(
+        <div className='flex mt-10 hover:cursor-pointer hover:border-l-[3px] border-white  hover:text-white hover:bg-gray-700 hover:rounded-lg'>
+          <div>
+            <svg className='w-9  fill-gray-400' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" /></svg>
+          </div>
+          <div>
+            <h1 className='text-gray-400 text-xl font-bold ml-2 ' ><Link to={"/home"}>Home</Link></h1>
+          </div>
         </div>
-        <div>
-          <h1 className='text-gray-400 text-xl font-bold ml-2 ' ><Link to={"/home"}>Home</Link></h1>
-        </div>
-      </div>
-    )
-   } 
+      )
+      }
 
       {!user &&(<div className='flex mt-7 hover:border-l-[3px] border-white  hover:text-white hover:bg-gray-700 hover:rounded-lg'>
         <div>
@@ -70,7 +71,7 @@ export default function Home() {
         </div>)
       }
 
-      {user && (
+      {user && user.role === "user" && (
 
         <>
           <div className='flex mt-7 hover:border-l-[3px] border-white  hover:text-white hover:bg-gray-700 hover:rounded-lg'>
@@ -90,7 +91,10 @@ export default function Home() {
               <h1 className='text-gray-400 text-xl font-bold ml-2'><Link to={"/user"}>user</Link></h1>
             </div>
           </div>
-
+        </>
+      )}
+      {user &&(
+        <>
           <div className='flex absolute bottom-0' onClick={handleLogout}>
             <div className=''>
               <svg className='w-9  fill-gray-400' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M224 160C241.7 160 256 145.7 256 128C256 110.3 241.7 96 224 96L160 96C107 96 64 139 64 192L64 448C64 501 107 544 160 544L224 544C241.7 544 256 529.7 256 512C256 494.3 241.7 480 224 480L160 480C142.3 480 128 465.7 128 448L128 192C128 174.3 142.3 160 160 160L224 160zM566.6 342.6C579.1 330.1 579.1 309.8 566.6 297.3L438.6 169.3C426.1 156.8 405.8 156.8 393.3 169.3C380.8 181.8 380.8 202.1 393.3 214.6L466.7 288L256 288C238.3 288 224 302.3 224 320C224 337.7 238.3 352 256 352L466.7 352L393.3 425.4C380.8 437.9 380.8 458.2 393.3 470.7C405.8 483.2 426.1 483.2 438.6 470.7L566.6 342.7z" /></svg>
@@ -101,6 +105,18 @@ export default function Home() {
 
           </div>
         </>
+      )}
+      {user && user.role === "admin" && (
+        <div className='flex mt-7 hover:border-l-[3px] border-white hover:text-white hover:bg-gray-700 hover:rounded-lg'>
+          <div>
+            <svg className='w-9  fill-gray-400' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 312C253.7 312 200 258.3 200 192C200 125.7 253.7 72 320 72C386.3 72 440 125.7 440 192C440 258.3 386.3 312 320 312zM289.5 368L350.5 368C360.2 368 368 375.8 368 385.5C368 389.7 366.5 393.7 363.8 396.9L336.4 428.9L367.4 544L368 544L402.6 405.5C404.8 396.8 413.7 391.5 422.1 394.7C484 418.3 528 478.3 528 548.5C528 563.6 515.7 575.9 500.6 575.9L139.4 576C124.3 576 112 563.7 112 548.6C112 478.4 156 418.4 217.9 394.8C226.3 391.6 235.2 396.9 237.4 405.6L272 544.1L272.6 544.1L303.6 429L276.2 397C273.5 393.8 272 389.8 272 385.6C272 375.9 279.8 368.1 289.5 368.1z" /></svg>
+          </div>
+          <div>
+            <h1 className='text-gray-400 text-xl font-bold ml-2 '>
+              <Link to={"/admin-dashboard"}>Admin Dashboard</Link>
+            </h1>
+          </div>
+        </div>
       )}
 
 

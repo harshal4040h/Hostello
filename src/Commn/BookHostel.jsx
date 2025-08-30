@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import toast, { Toaster } from "react-hot-toast";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function BookHostel() {
 
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get("category"); // standard | executive | premium | royal
 
@@ -105,58 +106,55 @@ export default function BookHostel() {
     });
   };
 
-  const handlesubmit = async (e) => {
+  const handlesubmit = (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost/hostello_php/book_hostel.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-      credentials: "include"
-    });
-
-    const result = await response.json();
-
-    if (result.status === "success") {
-      toast.success("✅ Hostel booked!");
-      window.location.href = "/user";
-    } else {
-      toast.error("❌ " + result.message);
+    if (!data.room || !data.duration || !data.total_amount) {
+      toast.error("⚠️ Please select room, duration and food option before submitting!");
+      return;
     }
+
+    // Pass form data to payment page via query params
+    const query = new URLSearchParams(data).toString();
+    navigate(`/payment?${query}`);
   }
 
   return (
-    <div>
-      <h1 className='text-center text-2xl font-bold'>Book Hostel</h1>
+    <div className="bg-slate-900 min-h-screen text-gray-200">
+      <h1 className="text-center text-3xl font-bold text-white mb-8">
+        Book Hostel
+      </h1>
+
       <div>
         <form className='flex justify-center ' onSubmit={handlesubmit}>
 
-          <div className='w-10/12 h-[560px] my-8 bg-slate-50 mt-4'>
+          <div className='w-10/12 rounded-2xl p-8 my-8 bg-slate-800 shadow-lg'>
 
-            <div className='flex  mx-2'>
+            {/* First Section */}
+            <div className='flex justify-between px-10'>
 
-              <div className='mx-48'>
-
+              {/* Left Column */}
+              <div>
                 <div className="my-5">
-                  <label>Start Date</label>
+                  <label className="block mb-1 text-white">Start Date</label>
                   <input
                     type="date"
                     name="start_date"
                     onChange={handlechange}
                     value={data.start_date}
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   />
                 </div>
 
                 <div className='my-5'>
-                  <label className=''>Course</label>
+                  <label className="block mb-1 text-white">Course</label>
                   <select
                     onChange={handlechange}
                     value={data.course}
                     name='course'
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   >
                     <option value="">-- Select Course --</option>
                     <option value='BBA'>BBA</option>
@@ -169,40 +167,39 @@ export default function BookHostel() {
                 </div>
 
                 <div className="my-5">
-                  <label>Room Number</label>
+                  <label className="block mb-1 text-white">Room Number</label>
                   <select
                     name="room"
                     onChange={handlechange}
                     value={data.room}
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   >
                     <option value="">-- Select Room --</option>
                     {rooms.map((room, index) => (
                       <option
                         key={index}
                         value={room.roomnumber}
-                        disabled={room.booked_count >= 2} // 🔹 disable full rooms
+                        disabled={room.booked_count >= 2}
                       >
                         {room.roomnumber} {room.booked_count >= 2 ? "(Full)" : `(${room.booked_count}/2 booked)`}
                       </option>
                     ))}
                   </select>
                 </div>
-
               </div>
 
-              <div className=''>
-
+              {/* Right Column */}
+              <div>
                 <div className="my-5">
-                  <label>Duration</label>
+                  <label className="block mb-1 text-white">Duration</label>
                   <select
                     name="duration"
                     onChange={handlechange}
                     value={data.duration}
                     disabled={!data.room}
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   >
                     <option value="">-- Select Duration --</option>
                     <option value="1yr">1 Year</option>
@@ -212,99 +209,92 @@ export default function BookHostel() {
                 </div>
 
                 <div className="my-5">
-                  <label>Food Status</label>
+                  <label className="block mb-1 text-white">Food Status</label>
                   <select
                     name="food_status"
                     onChange={handlechange}
                     value={data.food_status}
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   >
                     <option value="">-- Select --</option>
-                    <option value="yes">With Food(+20000)</option>
+                    <option value="yes">With Food (+20000)</option>
                     <option value="no">Without Food</option>
                   </select>
                 </div>
 
                 <div className="my-5">
-                  <label>Total Amount</label>
+                  <label className="block mb-1 text-white">Total Amount</label>
                   <input
                     type="text"
                     name="total_amount"
                     value={data.total_amount}
                     readOnly
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                    focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Guardian Section */}
+            <div className='mt-10'>
+              <h1 className='text-center text-2xl font-bold text-white'>Guardian Information</h1>
+
+              <div className='flex justify-between px-10'>
+                <div className='mt-5'>
+                  <label className="block mb-1 text-white">Name</label>
+                  <input
+                    type="text"
+                    value={data.g_name}
+                    name="g_name"
+                    onChange={handlechange}
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
+                  />
+                </div>
+
+                <div className='mt-5'>
+                  <label className="block mb-1 text-white">Contact</label>
+                  <input
+                    type="text"
+                    value={data.g_contact}
+                    name="g_contact"
+                    onChange={handlechange}
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
                   />
                 </div>
               </div>
 
-            </div>
-
-            <div className=''>
-              <div>
-                <h1 className='text-center text-2xl font-bold '>Guardian information</h1>
-
-                <div className='flex  mx-2'>
-                  <div className='mx-48'>
-                    <div className='mt-5'>
-                      <label htmlFor="name">Name: </label>
-                      <input
-                        type="text"
-                        value={data.g_name}
-                        name="g_name"
-                        onChange={handlechange}
-                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
-                      />
-                    </div>
-                  </div>
-
-                  <div className='mt-5'>
-                    <label htmlFor="contact">Contact: </label>
-                    <input
-                      type="text"
-                      value={data.g_contact}
-                      name="g_contact"
-                      onChange={handlechange}
-                      className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                      focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
-                    />
-                  </div>
+              <div className='flex justify-between px-10'>
+                <div className='mt-5'>
+                  <label className="block mb-1 text-white">Relation</label>
+                  <input
+                    type="text"
+                    value={data.g_relation}
+                    name="g_relation"
+                    onChange={handlechange}
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
+                  />
                 </div>
 
-                <div className='flex  mx-2'>
-                  <div className='mx-48'>
-                    <div className='mt-5'>
-                      <label htmlFor="relation">Relation: </label>
-                      <input
-                        type="text"
-                        value={data.g_relation}
-                        name="g_relation"
-                        onChange={handlechange}
-                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
-                      />
-                    </div>
-                  </div>
-
-                  <div className=''>
-                    <div className='mt-5'>
-                      <label htmlFor="address">Address: </label>
-                      <input
-                        type="text"
-                        value={data.g_address}
-                        name="g_address"
-                        onChange={handlechange}
-                        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                        focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5'
-                      />
-                    </div>
-                  </div>
+                <div className='mt-5'>
+                  <label className="block mb-1 text-white">Address</label>
+                  <input
+                    type="text"
+                    value={data.g_address}
+                    name="g_address"
+                    onChange={handlechange}
+                    className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
+                    focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'
+                  />
                 </div>
               </div>
             </div>
 
+            {/* Button */}
             <div className='text-center'>
               <button
                 type="submit"
@@ -316,7 +306,7 @@ export default function BookHostel() {
                 <span className="bg-gray-400 shadow-gray-400 absolute -top-[150%] left-0 
                 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] 
                 duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                Submit
+                Proceed to Payment
               </button>
             </div>
           </div>
