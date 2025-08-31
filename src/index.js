@@ -14,6 +14,10 @@ import AdminLogin from './admin/AdminLogin';
 import AdminDashboard from './admin/AdminDashboard';
 import ManageRooms from './admin/ManageRooms';
 import ManageStudents from './admin/ManageStudents';
+import Contactus_2 from './Commn/Contactus_2';
+import AboutUs from './Commn/Aboutus';
+
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -65,6 +69,12 @@ let allroutes = createBrowserRouter([
       {
         path:"/manage-student",
         element:<ManageStudents/>
+      },{
+        path:"contactus",
+        element:<Contactus_2/>
+      },{
+        path:"aboutus",
+        element:<AboutUs/>
       }
     ]
   }
