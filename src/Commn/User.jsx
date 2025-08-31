@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function User() {
   const [data, setData] = useState(null);
@@ -51,7 +52,7 @@ export default function User() {
 
     const result = await response.json();
     if (result.status === "success") {
-      alert("✅ Profile updated successfully!");
+      toast.success("✅ Profile updated successfully!");
       setData({
         ...data,
         user: {
@@ -61,54 +62,58 @@ export default function User() {
       });
       setShowUpdate(false);
     } else {
-      alert("❌ Failed to update user");
+      toast.error("❌ Failed to update user");
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-900 flex justify-center items-start py-12">
-      <div className="w-10/12 bg-slate-800 rounded-xl shadow-lg overflow-hidden text-gray-200">
+    <div className="min-h-screen w-full bg-slate-900 flex justify-center items-start py-12 px-4">
+      <div className="w-full max-w-4xl bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-lg overflow-hidden text-gray-200">
 
-        {/* Header with Update button */}
-        <div className="h-[110px] bg-slate-700 flex justify-end items-center pr-5">
+        {/* Header */}
+        <div className="h-[100px] bg-slate-700 flex justify-between items-center px-6">
+          <h1 className="text-2xl font-bold text-white">User Dashboard</h1>
           <button
             onClick={openUpdate}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 rounded-lg hover:bg-emerald-600 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-500 rounded-lg hover:bg-emerald-600 transition font-medium"
           >
             ✏️ Update
           </button>
         </div>
 
-        {/* User info */}
-        <div className="bg-slate-800 p-6">
-          <h2 className="text-xl text-white font-semibold border-b border-slate-600 pb-2 mb-4">
-            Personal Info
-          </h2>
-          <div className="space-y-2 text-gray-200">
-            <p><span className="font-bold">First Name:</span> {data?.user?.firstname}</p>
-            <p><span className="font-bold">Last Name:</span> {data?.user?.lastname}</p>
-            <p><span className="font-bold">Email:</span> {data?.user?.email}</p>
-            <p><span className="font-bold">Gender:</span> {data?.user?.gender}</p>
-            <p><span className="font-bold">Contact:</span> {data?.user?.contact_number}</p>
-          </div>
-        </div>
-
-        {/* Booking info */}
-        <div className="bg-slate-900 p-6">
-          <h2 className="text-xl text-white font-semibold border-b border-slate-700 pb-2 mb-4">
-            Booking Info
-          </h2>
-          {data?.booking ? (
-            <div className="space-y-2 text-gray-200">
-              <p><span className="font-bold">Course:</span> {data?.booking?.course}</p>
-              <p><span className="font-bold">Room:</span> {data?.booking?.roomnumber}</p>
-              <p><span className="font-bold">Duration:</span> {data?.booking?.duration}</p>
-              <p><span className="font-bold">Food:</span> {data?.booking?.food_status}</p>
-              <p><span className="font-bold">Total:</span> ₹{data?.booking?.total_amount}</p>
+        {/* Content */}
+        <div className="p-6 grid md:grid-cols-2 gap-6">
+          {/* Personal Info */}
+          <div className="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-md">
+            <h2 className="text-lg font-semibold text-white border-b border-slate-600 pb-2 mb-4">
+              Personal Info
+            </h2>
+            <div className="space-y-2 text-gray-300">
+              <p><span className="font-bold text-white">First Name:</span> {data?.user?.firstname}</p>
+              <p><span className="font-bold text-white">Last Name:</span> {data?.user?.lastname}</p>
+              <p><span className="font-bold text-white">Email:</span> {data?.user?.email}</p>
+              <p><span className="font-bold text-white">Gender:</span> {data?.user?.gender}</p>
+              <p><span className="font-bold text-white">Contact:</span> {data?.user?.contact_number}</p>
             </div>
-          ) : (
-            <p className="text-gray-400">No booking found.</p>
-          )}
+          </div>
+
+          {/* Booking Info */}
+          <div className="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-md">
+            <h2 className="text-lg font-semibold text-white border-b border-slate-600 pb-2 mb-4">
+              Booking Info
+            </h2>
+            {data?.booking ? (
+              <div className="space-y-2 text-gray-300">
+                <p><span className="font-bold text-white">Course:</span> {data.booking.course}</p>
+                <p><span className="font-bold text-white">Room:</span> {data.booking.roomnumber}</p>
+                <p><span className="font-bold text-white">Duration:</span> {data.booking.duration}</p>
+                <p><span className="font-bold text-white">Food:</span> {data.booking.food_status}</p>
+                <p><span className="font-bold text-white">Total:</span> ₹{data.booking.total_amount}</p>
+              </div>
+            ) : (
+              <p className="text-gray-400">No booking found.</p>
+            )}
+          </div>
         </div>
 
         {/* Update Modal */}
@@ -117,10 +122,9 @@ export default function User() {
             onSubmit={handleSubmit}
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           >
-            <div className="bg-slate-800 p-8 rounded-2xl shadow-xl w-[500px]">
+            <div className="bg-slate-800/90 backdrop-blur-xl p-8 rounded-2xl shadow-xl w-[500px]">
               <h2 className="text-2xl font-bold text-white mb-6 text-center">Update Profile</h2>
 
-              {/* Two column grid */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm mb-1 text-gray-300">First Name</label>
@@ -184,6 +188,7 @@ export default function User() {
           </form>
         )}
       </div>
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

@@ -8,35 +8,36 @@ export default function PaymentPage() {
   const queryParams = new URLSearchParams(location.search);
   const bookingData = Object.fromEntries(queryParams.entries());
 
-  const handlePayment = async () => {
-    try {
-      // 🔹 simulate payment success
-      toast.loading("Processing payment...");
+  const handlePayment = () => {
+    const loadingToast = toast.loading("Processing payment...");
 
-      setTimeout(async () => {
-        toast.dismiss();
-        toast.success("✅ Payment Successful!");
+    setTimeout(() => {
+      (async () => {
+        try {
+          // ✅ Save booking after payment
+          const response = await fetch("http://localhost/hostello_php/book_hostel.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(bookingData),
+          });
 
-        // Save booking after payment
-        const response = await fetch("http://localhost/hostello_php/book_hostel.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(bookingData),
-        });
+          const result = await response.json();
+          toast.dismiss(loadingToast);
 
-        const result = await response.json();
-
-        if (result.status === "success") {
-          toast.success("🎉 Hostel booked successfully!");
-          navigate("/user");
-        } else {
-          toast.error("❌ " + result.message);
+          if (result.status === "success") {
+            toast.success("🎉 Hostel booked successfully!");
+            navigate("/user");
+            return;
+          } else {
+            toast.error("❌ " + result.message);
+          }
+        } catch (err) {
+          toast.dismiss(loadingToast);
+          toast.error("⚠️ Payment failed, try again.");
         }
-      }, 2000); // 2 sec fake delay
-    } catch (err) {
-      toast.error("⚠️ Payment failed, try again.");
-    }
+      })();
+    }, 2000); // 2 sec fake delay
   };
 
   return (
@@ -44,16 +45,16 @@ export default function PaymentPage() {
       <div className="bg-white shadow-lg rounded-2xl p-8 w-[400px]">
         <h1 className="text-2xl font-bold text-center mb-4">Payment Page</h1>
         <p className="text-lg mb-2">
-          <span className="font-semibold">Room:</span> {bookingData.room}
+          <span className="font-semibold">Room:</span> {bookingData.room || "N/A"}
         </p>
         <p className="text-lg mb-2">
-          <span className="font-semibold">Duration:</span> {bookingData.duration}
+          <span className="font-semibold">Duration:</span> {bookingData.duration || "N/A"}
         </p>
         <p className="text-lg mb-2">
-          <span className="font-semibold">Food:</span> {bookingData.food_status}
+          <span className="font-semibold">Food:</span> {bookingData.food_status || "N/A"}
         </p>
         <p className="text-xl font-bold text-green-600 mb-6">
-          Total Amount: ₹{bookingData.total_amount}
+          Total Amount: ₹{bookingData.total_amount || 0}
         </p>
 
         <button
