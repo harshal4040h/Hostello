@@ -12,6 +12,8 @@ import User from './Commn/User';
 import PaymentPage from "./Commn/PaymentPage";
 import AdminLogin from './admin/AdminLogin';
 import AdminDashboard from './admin/AdminDashboard';
+import ManageRooms from './admin/ManageRooms';
+import ManageStudents from './admin/ManageStudents';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -47,14 +49,22 @@ let allroutes = createBrowserRouter([
       {
         path: "/payment",
         element: <PaymentPage />
-      }, 
-      {
-        path:"/adminlogin",
-        element:<AdminLogin/>
       },
       {
-        path:"/admin-dashboard",
-        element:<AdminDashboard/>
+        path: "/adminlogin",
+        element: <AdminLogin />
+      },
+      {
+        path: "/admin-dashboard",
+        element: <AdminDashboard />
+      }, 
+      {
+        path:"/manage-rooms",
+        element:<ManageRooms/>
+      },
+      {
+        path:"/manage-student",
+        element:<ManageStudents/>
       }
     ]
   }
