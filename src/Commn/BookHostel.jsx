@@ -228,7 +228,7 @@ export default function BookHostel() {
                   <input
                     type="text"
                     name="total_amount"
-                    value={data.total_amount}
+                   value={data.total_amount ? `₹ ${data.total_amount}` : ""}
                     readOnly
                     className='bg-slate-700 border border-slate-600 text-gray-200 text-sm rounded-lg 
                     focus:ring-emerald-500 focus:border-emerald-500 block w-[300px] p-2.5'

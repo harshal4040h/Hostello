@@ -39,7 +39,7 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold text-white flex items-center gap-2">
             📊 Admin Dashboard
           </h1>
-          <p className="text-gray-400">Welcome, {admin?.email}</p>
+          <p className="text-gray-400">Welcome, {admin?.role}</p>
         </div>
 
         {/* Table */}
